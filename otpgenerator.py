@@ -94,6 +94,12 @@ class OTPGenerator:
         self.window.show()
         gtk.main()
 
+    def account(self):
+        pass
+
+    def about(self):
+        pass
+
 if __name__ == '__main__':
     otp_generator = OTPGenerator()
     otp_generator.main()
