@@ -6,6 +6,9 @@ import gtk
 import time
 import md5
 
+from window import account
+from window import about
+
 class OTPGenerator:
     
     def __init__(self):
