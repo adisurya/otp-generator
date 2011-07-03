@@ -12,31 +12,64 @@ class OTPGenerator:
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_title('OTP Generator')
         self.window.connect('destroy', lambda x: gtk.main_quit())
-        self.window.set_border_width(12)
-        self.main_box = gtk.VBox(False)
+        self.window.set_border_width(0)
+
+        ui = """
+            <ui>
+                <menubar name="MenuBar">
+                    <menu action="Application">
+                        <menuitem action="Account" />
+                        <menuitem action="About" />
+                    </menu>
+                </menubar>
+            </ui>
+            """
+        ui_manager = gtk.UIManager()
+        accel_group = ui_manager.get_accel_group()
+        self.window.add_accel_group(accel_group)
+        action_group = gtk.ActionGroup("Menu OTP")
+        action_group.add_actions(
+            [
+                ("Application", None, "_Application", None, None, None),
+                ("Account", None, "A_ccount", None, None, None),
+                ("About", None, "A_bout", None, None, None)
+
+            ]
+        )
+        ui_manager.insert_action_group(action_group, 0)
+        ui_manager.add_ui_from_string(ui)
+        menubar = ui_manager.get_widget("/MenuBar")
+
+        container = gtk.VBox(False, 0)
+        container.show()
+        menubar.show()
+        container.pack_start(menubar, False, False, 0)
+
+        self.content = gtk.VBox(False)
 
         self.secret_key = '1234567890123456'
         pin_label = gtk.Label('Pin')
-        self.main_box.pack_start(pin_label, False, False, 3)
+        self.content.pack_start(pin_label, False, False, 3)
         pin_label.show()
 
         self.pin_entry = gtk.Entry(4)
         self.pin_entry.set_text("0000")
-        self.main_box.pack_start(self.pin_entry, False, False, 3)
+        self.content.pack_start(self.pin_entry, False, False, 3)
         self.pin_entry.show()
 
         self.generate_button = gtk.Button('Generate')
         self.generate_button.connect('clicked', self.generate_otp)
-        self.main_box.pack_start(self.generate_button, False, False, 3)
+        self.content.pack_start(self.generate_button, False, False, 3)
         self.generate_button.show()
         
 
         self.result_label = gtk.Label('')
-        self.main_box.pack_start(self.result_label, False, False, 3)
+        self.content.pack_start(self.result_label, False, False, 3)
         self.result_label.show()
 
-        self.main_box.show()
-        self.window.add(self.main_box)
+        self.content.show()
+        container.pack_start(self.content, True, True, 12)
+        self.window.add(container)
 
     def generate_otp(self, widget, data = None):
 
