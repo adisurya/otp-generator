@@ -13,6 +13,7 @@ class OTPGenerator:
     
     def __init__(self):
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.account_window = account.AccountWindow()
         self.window.set_title('OTP Generator')
         self.window.connect('destroy', lambda x: gtk.main_quit())
         self.window.set_border_width(0)
@@ -97,8 +98,8 @@ class OTPGenerator:
         self.window.show()
         gtk.main()
 
-    def account(self):
-        pass
+    def account(self, action, data = None):
+        self.account_window.show()
 
     def about(self):
         pass
