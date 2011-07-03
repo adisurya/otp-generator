@@ -20,6 +20,8 @@ class OTPGenerator:
                     <menu action="Application">
                         <menuitem action="Account" />
                         <menuitem action="About" />
+                        <separator />
+                        <menuitem action="Exit" />
                     </menu>
                 </menubar>
             </ui>
@@ -30,9 +32,10 @@ class OTPGenerator:
         action_group = gtk.ActionGroup("Menu OTP")
         action_group.add_actions(
             [
-                ("Application", None, "_Application", None, None, None),
-                ("Account", None, "A_ccount", None, None, None),
-                ("About", None, "A_bout", None, None, None)
+                ("Application", None, "A_pplication", None, None, None),
+                ("Account", None, "_Account", "<control>a", "Account Setting", self.account),
+                ("About", None, "A_bout", "<control>b", "About This Application", self.about),
+                ("Exit", None, "E_xit", "<control>x", "Exit This Application", gtk.main_quit)
 
             ]
         )
