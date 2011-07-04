@@ -7,6 +7,10 @@ import time
 import md5
 
 class ProfileWindow:
+    window = None
+    profile_entry = None
+    secret_entry = None
+    secret_label = None
     def __init__(self, caller = None):
         self.caller = caller
         self.connection = caller.connection
@@ -14,16 +18,19 @@ class ProfileWindow:
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_transient_for(self.caller.window)
         self.window.set_modal(True)
+        self.window.connect("delete_event", self.delete_event)
 
         container = gtk.VBox(False)
         container.show()
-
         label = gtk.Label("Profile Name")
         container.pack_start(label, False, False, 0)
         label.show()
 
-        self.profile_entry = gtk.ComboBoxEntry()
+        store = gtk.ListStore(str)
+
+        self.profile_entry = gtk.ComboBoxEntry(store)
         container.pack_start(self.profile_entry, False, False, 0)
+        self.populate_profile(self.profile_entry)
         self.profile_entry.show()
 
         label = gtk.Label("Secret")
@@ -91,3 +98,19 @@ class ProfileWindow:
     def remove_Profile(self, widget, data = None):
         pass
         
+    def populate_profile(self, widget):
+        store = widget.get_model()
+        store.clear()
+
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT name FROM profiles")
+
+        for name, in cursor:
+            store.append([name])
+            print name
+
+        cursor.close()
+
+    def delete_event(self, widget, event, data = None):
+        self.window.hide()
+        return True
