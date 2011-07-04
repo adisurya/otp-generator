@@ -95,6 +95,7 @@ class ProfileWindow:
         entry = self.profile_entry.child
         profile_name = entry.get_text()
 
+        # check for empty profile name
         if len(profile_name) <= 0:
             dialog = gtk.MessageDialog(
                 self.window,
@@ -107,6 +108,25 @@ class ProfileWindow:
             if response:
                 dialog.destroy()
                 entry.grab_focus()
+
+        # check for already used profile name
+        sql = "SELECT name FROM profiles WHERE name = ?"
+        cursor.execute(sql, (profile_name,))
+        print cursor.rowcount
+        if cursor.rowcount > 0:
+            dialog = gtk.MessageDialog(
+                self.window,
+                gtk.DIALOG_MODAL,
+                gtk.MESSAGE_WARNING,
+                gtk.BUTTONS_OK,
+                "Profile name is already used!"
+            )
+            response = dialog.run()
+            if response:
+                dialog.destroy()
+                entry.grab_focus()
+
+
 
         cursor.close()
 
