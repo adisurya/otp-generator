@@ -8,6 +8,7 @@ import random
 
 class ProfileWindow:
     window = None
+    connection = None
     profile_entry = None
     secret_entry = None
     secret_label = None
@@ -129,6 +130,16 @@ class ProfileWindow:
                 dialog.destroy()
                 entry.grab_focus()
             return None
+        secret = self.generate_secret()
+        if secret == None:
+            return None
+
+        sql = "INSERT INTO profiles VALUES(?,?,?)"
+        inputs = (profile_name, secret, 1)
+
+        cursor.execute(sql, inputs)
+        self.connection.commit()
+
         cursor.close()
 
     def remove_Profile(self, widget, data = None):
