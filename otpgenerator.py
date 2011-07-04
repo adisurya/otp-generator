@@ -6,14 +6,14 @@ import gtk
 import time
 import md5
 
-from window import account
+from window import profile
 from window import about
 
 class OTPGenerator:
     
     def __init__(self):
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.account_window = account.AccountWindow()
+        self.profile_window = profile.ProfileWindow(self)
         self.window.set_title('OTP Generator')
         self.window.connect('destroy', lambda x: gtk.main_quit())
         self.window.set_border_width(0)
@@ -22,7 +22,7 @@ class OTPGenerator:
             <ui>
                 <menubar name="MenuBar">
                     <menu action="Application">
-                        <menuitem action="Account" />
+                        <menuitem action="Profile" />
                         <menuitem action="About" />
                         <separator />
                         <menuitem action="Exit" />
@@ -36,8 +36,8 @@ class OTPGenerator:
         action_group = gtk.ActionGroup("Menu OTP")
         action_group.add_actions(
             [
-                ("Application", None, "A_pplication", None, None, None),
-                ("Account", None, "_Account", "<control>a", "Account Setting", self.account),
+                ("Application", None, "_Application", None, None, None),
+                ("Profile", None, "_Profile", "<control>p", "Profile Setting", self.profile),
                 ("About", None, "A_bout", "<control>b", "About This Application", self.about),
                 ("Exit", None, "E_xit", "<control>x", "Exit This Application", gtk.main_quit)
 
@@ -98,8 +98,8 @@ class OTPGenerator:
         self.window.show()
         gtk.main()
 
-    def account(self, action, data = None):
-        self.account_window.show()
+    def profile(self, action, data = None):
+        self.profile_window.show()
 
     def about(self):
         pass

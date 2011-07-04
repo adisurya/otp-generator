@@ -6,7 +6,7 @@ import gtk
 import time
 import md5
 
-class AccountWindow:
+class ProfileWindow:
     def __init__(self, caller = None):
         self.caller = caller
 
@@ -17,13 +17,13 @@ class AccountWindow:
         container = gtk.VBox(False)
         container.show()
 
-        label = gtk.Label("Account Name")
+        label = gtk.Label("Profile Name")
         container.pack_start(label, False, False, 0)
         label.show()
 
-        self.account_name_entry = gtk.Entry()
-        container.pack_start(self.account_name_entry, False, False, 0)
-        self.account_name_entry.show()
+        self.Profile_name_entry = gtk.Entry()
+        container.pack_start(self.Profile_name_entry, False, False, 0)
+        self.Profile_name_entry.show()
 
         label = gtk.Label("Secret")
         container.pack_start(label, False, False, 0)
@@ -61,12 +61,12 @@ class AccountWindow:
 
 
         button = gtk.Button("Add")
-        button.connect("clicked", self.add_account)
+        button.connect("clicked", self.add_Profile)
         button.show()
         button_box.add(button)
 
         button = gtk.Button("Remove")
-        button.connect("clicked", self.remove_account)
+        button.connect("clicked", self.remove_Profile)
         button.show()
         button_box.add(button)
 
@@ -82,8 +82,8 @@ class AccountWindow:
             self.secret_entry.set_sensitive(False)
             self.secret_entry.set_text("")
 
-    def add_account(self, widget, data = None):
+    def add_Profile(self, widget, data = None):
         pass
 
-    def remove_account(self, widget, data = None):
+    def remove_Profile(self, widget, data = None):
         pass
