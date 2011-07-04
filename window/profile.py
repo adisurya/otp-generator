@@ -9,6 +9,7 @@ import md5
 class ProfileWindow:
     def __init__(self, caller = None):
         self.caller = caller
+        self.connection = caller.connection
 
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_transient_for(self.caller.window)
@@ -21,9 +22,9 @@ class ProfileWindow:
         container.pack_start(label, False, False, 0)
         label.show()
 
-        self.Profile_name_entry = gtk.Entry()
-        container.pack_start(self.Profile_name_entry, False, False, 0)
-        self.Profile_name_entry.show()
+        self.profile_entry = gtk.ComboBoxEntry()
+        container.pack_start(self.profile_entry, False, False, 0)
+        self.profile_entry.show()
 
         label = gtk.Label("Secret")
         container.pack_start(label, False, False, 0)
@@ -83,7 +84,10 @@ class ProfileWindow:
             self.secret_entry.set_text("")
 
     def add_Profile(self, widget, data = None):
-        pass
+        cursor = self.connection.cursor()
+
+        cursor.close()
 
     def remove_Profile(self, widget, data = None):
         pass
+        
