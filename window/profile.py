@@ -129,7 +129,6 @@ class ProfileWindow:
                 dialog.destroy()
                 entry.grab_focus()
             return None
-
         cursor.close()
 
     def remove_Profile(self, widget, data = None):
@@ -174,4 +173,4 @@ class ProfileWindow:
             rand_number = str(random.getrandbits(400))
             md = md5.new()
             md.update(rand_number)
-            return md.hexdigest()
+            return md.hexdigest()[0:16]
