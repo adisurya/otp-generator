@@ -32,7 +32,7 @@ class ProfileWindow:
 
         self.profile_entry = gtk.ComboBoxEntry(store)
         container.pack_start(self.profile_entry, False, False, 0)
-        self.populate_profile(self.profile_entry)
+        self.populate_profile()
         self.profile_entry.show()
 
         label = gtk.Label("Secret")
@@ -141,12 +141,13 @@ class ProfileWindow:
         self.connection.commit()
 
         cursor.close()
+        self.populate_profile()
 
     def remove_Profile(self, widget, data = None):
         pass
         
-    def populate_profile(self, widget):
-        store = widget.get_model()
+    def populate_profile(self):
+        store = self.profile_entry.get_model()
         store.clear()
 
         cursor = self.connection.cursor()
