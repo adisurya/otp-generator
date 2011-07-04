@@ -5,6 +5,7 @@ pygtk.require('2.0')
 import gtk
 import time
 import md5
+import sqlite3
 
 from window import profile
 from window import about
@@ -12,6 +13,7 @@ from window import about
 class OTPGenerator:
     
     def __init__(self):
+        self.connection = sqlite3.connect('./data.sqlite')
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.profile_window = profile.ProfileWindow(self)
         self.window.set_title('OTP Generator')
