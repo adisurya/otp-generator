@@ -155,6 +155,7 @@ class ProfileWindow:
 
         cursor.close()
         self.populate_profile()
+        self.secret_label.set_text(secret)
 
     def remove_Profile(self, widget, data = None):
         pass
