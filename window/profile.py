@@ -65,6 +65,10 @@ class ProfileWindow:
         container.pack_start(self.secret_label, False, False, 0)
         self.secret_label.show()
 
+        separator = gtk.HSeparator()
+        container.pack_start(separator, False, False, 5)
+        separator.show()
+
         button_box = gtk.HButtonBox()
         button_box.set_layout(gtk.BUTTONBOX_END)
         container.pack_start(button_box, False, False, 0)
