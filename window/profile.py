@@ -3,14 +3,15 @@
 import pygtk
 pygtk.require('2.0')
 import gtk
-import time
 import md5
+import random
 
 class ProfileWindow:
     window = None
     profile_entry = None
     secret_entry = None
     secret_label = None
+    secret_status = "auto"
     def __init__(self, caller = None):
         self.caller = caller
         self.connection = caller.connection
@@ -86,9 +87,11 @@ class ProfileWindow:
     def secret_toggle(self, widget, data = None):
         if data == "Manual":
             self.secret_entry.set_sensitive(True)
+            self.secret_status = "manual"
         else:
             self.secret_entry.set_sensitive(False)
             self.secret_entry.set_text("")
+            self.secret_status = "auto"
 
     def add_Profile(self, widget, data = None):
         cursor = self.connection.cursor()
@@ -108,11 +111,11 @@ class ProfileWindow:
             if response:
                 dialog.destroy()
                 entry.grab_focus()
+            return None
 
         # check for already used profile name
         sql = "SELECT name FROM profiles WHERE name = ?"
         cursor.execute(sql, (profile_name,))
-        print cursor.rowcount
         if cursor.rowcount > 0:
             dialog = gtk.MessageDialog(
                 self.window,
@@ -125,8 +128,7 @@ class ProfileWindow:
             if response:
                 dialog.destroy()
                 entry.grab_focus()
-
-
+            return None
 
         cursor.close()
 
@@ -149,3 +151,27 @@ class ProfileWindow:
     def delete_event(self, widget, event, data = None):
         self.window.hide()
         return True
+
+    def generate_secret(self):
+        if self.secret_status == "manual":
+            secret = self.secret_entry.get_text()
+            if len(secret) <= 0:
+                dialog = gtk.MessageDialog(
+                    self.window,
+                    gtk.DIALOG_MODAL,
+                    gtk.MESSAGE_WARNING,
+                    gtk.BUTTONS_OK,
+                    "Please enter secret key or choose Automatic"
+                )
+                response = dialog.run()
+                if response:
+                    dialog.destroy()
+                    self.secret_entry.grab_focus()
+                return None
+            else:
+                return secret
+        else:
+            rand_number = str(random.getrandbits(400))
+            md = md5.new()
+            md.update(rand_number)
+            return md.hexdigest()
