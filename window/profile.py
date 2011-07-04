@@ -20,6 +20,7 @@ class ProfileWindow:
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_transient_for(self.caller.window)
         self.window.set_modal(True)
+        self.window.set_border_width(5)
         self.window.connect("delete_event", self.delete_event)
 
         container = gtk.VBox(False)
@@ -128,7 +129,8 @@ class ProfileWindow:
         # check for already used profile name
         sql = "SELECT name FROM profiles WHERE name = ?"
         cursor.execute(sql, (profile_name,))
-        if cursor.rowcount > 0:
+
+        if len(cursor.fetchall()) > 0:
             dialog = gtk.MessageDialog(
                 self.window,
                 gtk.DIALOG_MODAL,
