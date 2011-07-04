@@ -13,6 +13,7 @@ class ProfileWindow:
     secret_entry = None
     secret_label = None
     secret_status = "auto"
+    hide_secret_button = None
     def __init__(self, caller = None):
         self.caller = caller
         self.connection = caller.connection
@@ -81,6 +82,11 @@ class ProfileWindow:
         button_box.set_layout(gtk.BUTTONBOX_END)
         container.pack_start(button_box, False, False, 0)
         button_box.show()
+
+        self.hide_secret_button = gtk.Button("Hide Secret")
+        self.hide_secret_button.connect("clicked", self.hide_secret)
+        self.hide_secret_button.show()
+        button_box.add(self.hide_secret_button)
 
         button = gtk.Button("Add")
         button.connect("clicked", self.add_Profile)
@@ -212,3 +218,6 @@ class ProfileWindow:
             return None
 
         self.secret_label.set_text(model[active][1])
+
+    def hide_secret(self, widget, data = None):
+        pass
