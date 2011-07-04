@@ -92,6 +92,21 @@ class ProfileWindow:
 
     def add_Profile(self, widget, data = None):
         cursor = self.connection.cursor()
+        entry = self.profile_entry.child
+        profile_name = entry.get_text()
+
+        if len(profile_name) <= 0:
+            dialog = gtk.MessageDialog(
+                self.window,
+                gtk.DIALOG_MODAL,
+                gtk.MESSAGE_WARNING,
+                gtk.BUTTONS_OK,
+                "Please enter your profile name!"
+            )
+            response = dialog.run()
+            if response:
+                dialog.destroy()
+                entry.grab_focus()
 
         cursor.close()
 
