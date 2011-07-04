@@ -215,9 +215,23 @@ class ProfileWindow:
 
         if model[active][2] < 1:
             self.secret_label.set_text("")
+            self.hide_secret_button.set_sensitive(False)
             return None
+        else:
+            self.hide_secret_button.set_sensitive(True)
 
         self.secret_label.set_text(model[active][1])
 
     def hide_secret(self, widget, data = None):
-        pass
+        profile_name = self.profile_entry.child.get_text()
+
+        cursor = self.connection.cursor()
+        sql = "UPDATE profiles SET show_secret = 0 WHERE name = ?"
+        cursor.execute(sql, (profile_name,))
+        self.connection.commit()
+        if cursor.rowcount:
+            self.secret_label.set_text("")
+            self.hide_secret_button.set_sensitive(False)
+
+        cursor.close()
+        self.populate_profile()
