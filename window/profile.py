@@ -28,10 +28,11 @@ class ProfileWindow:
         container.pack_start(label, False, False, 0)
         label.show()
 
-        store = gtk.ListStore(str)
+        store = gtk.ListStore(str, str, int)
 
         self.profile_entry = gtk.ComboBoxEntry(store)
         container.pack_start(self.profile_entry, False, False, 0)
+        self.profile_entry.connect('changed', self.show_secret)
         self.populate_profile()
         self.profile_entry.show()
 
@@ -151,11 +152,10 @@ class ProfileWindow:
         store.clear()
 
         cursor = self.connection.cursor()
-        cursor.execute("SELECT name FROM profiles")
+        cursor.execute("SELECT name, secret, show_secret FROM profiles")
 
-        for name, in cursor:
-            store.append([name])
-            print name
+        for name, secret, show_secret in cursor:
+            store.append([name, secret, show_secret])
 
         cursor.close()
 
@@ -186,3 +186,16 @@ class ProfileWindow:
             md = md5.new()
             md.update(rand_number)
             return md.hexdigest()[0:16]
+
+    def show_secret(self, widget, data = None):
+        model = widget.get_model()
+        active = widget.get_active()
+        if active < 0:
+            self.secret_label.set_text("")
+            return None
+
+        if model[active][2] < 1:
+            self.secret_label.set_text("")
+            return None
+
+        self.secret_label.set_text(model[active][1])
