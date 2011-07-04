@@ -24,8 +24,9 @@ class ProfileWindow:
 
         container = gtk.VBox(False)
         container.show()
-        label = gtk.Label("Profile Name")
-        container.pack_start(label, False, False, 0)
+        label = gtk.Label("Profile Name:")
+        label.set_alignment(0,0)
+        container.pack_start(label, False, False, 3)
         label.show()
 
         store = gtk.ListStore(str, str, int)
@@ -36,8 +37,9 @@ class ProfileWindow:
         self.populate_profile()
         self.profile_entry.show()
 
-        label = gtk.Label("Secret")
-        container.pack_start(label, False, False, 0)
+        label = gtk.Label("Secret:")
+        label.set_alignment(0,0)
+        container.pack_start(label, False, False, 3)
         label.show()
 
 
@@ -62,7 +64,8 @@ class ProfileWindow:
         self.secret_entry.show()
 
         label = gtk.Label("Your secret key is:")
-        container.pack_start(label, False, False, 0)
+        label.set_alignment(0,0)
+        container.pack_start(label, False, False, 3)
         label.show()
 
         self.secret_label = gtk.Label()
