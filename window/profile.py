@@ -61,6 +61,10 @@ class ProfileWindow:
         secret_box.pack_start(self.secret_entry, False, False, 0)
         self.secret_entry.show()
 
+        label = gtk.Label("Your secret key is:")
+        container.pack_start(label, False, False, 0)
+        label.show()
+
         self.secret_label = gtk.Label()
         container.pack_start(self.secret_label, False, False, 0)
         self.secret_label.show()
@@ -73,7 +77,6 @@ class ProfileWindow:
         button_box.set_layout(gtk.BUTTONBOX_END)
         container.pack_start(button_box, False, False, 0)
         button_box.show()
-
 
         button = gtk.Button("Add")
         button.connect("clicked", self.add_Profile)
