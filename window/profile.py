@@ -165,8 +165,50 @@ class ProfileWindow:
         self.secret_label.set_text(secret)
 
     def remove_Profile(self, widget, data = None):
-        pass
-        
+        entry = self.profile_entry.child
+        profile_name = entry.get_text()
+
+        # check for empty profile name
+        if len(profile_name) <= 0:
+            dialog = gtk.MessageDialog(
+                self.window,
+                gtk.DIALOG_MODAL,
+                gtk.MESSAGE_WARNING,
+                gtk.BUTTONS_OK,
+                "Please enter your profile name!"
+            )
+            response = dialog.run()
+            if response:
+                dialog.destroy()
+                entry.grab_focus()
+            return None
+
+        dialog = gtk.MessageDialog(
+            self.window,
+            gtk.DIALOG_MODAL,
+            gtk.MESSAGE_QUESTION,
+            gtk.BUTTONS_YES_NO,
+            "Are you sure you want to delete this profile?"
+        )
+        response = dialog.run()
+        print response
+        dialog.destroy()
+        entry.grab_focus()
+
+        if response == -8:
+            cursor = self.connection.cursor()
+            sql = "DELETE FROM profiles WHERE name = ?"
+            cursor.execute(sql, (profile_name, ))
+            self.connection.commit()
+            cursor.close()
+            entry.set_text("")
+        else:
+            return None
+
+        self.populate_profile()
+        self.caller.populate_profile()
+        self.show_secret(self.profile_entry)
+
     def populate_profile(self):
         store = self.profile_entry.get_model()
         store.clear()
