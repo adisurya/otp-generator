@@ -11,7 +11,8 @@ from window import profile
 from window import about
 
 class OTPGenerator:
-    
+    window = None
+    profile_window = None
     def __init__(self):
         self.connection = sqlite3.connect('./data.sqlite')
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -54,30 +55,43 @@ class OTPGenerator:
         menubar.show()
         container.pack_start(menubar, False, False, 0)
 
-        self.content = gtk.VBox(False)
+        content = gtk.VBox(False)
 
-        self.secret_key = '1234567890123456'
-        pin_label = gtk.Label('Pin')
-        self.content.pack_start(pin_label, False, False, 3)
-        pin_label.show()
+        label = gtk.Label("Profile Name:")
+        label.set_alignment(0,0)
+        content.pack_start(label, False, False, 3)
+        label.show()
+
+        store = gtk.ListStore(str, str, int)
+
+        self.profile_entry = gtk.ComboBoxEntry(store)
+        content.pack_start(self.profile_entry, False, False, 0)
+        self.populate_profile()
+        self.profile_entry.show()
+
+
+        label = gtk.Label('Pin')
+        label.set_alignment(0,0)
+        content.pack_start(label, False, False, 3)
+        label.show()
 
         self.pin_entry = gtk.Entry(4)
         self.pin_entry.set_text("0000")
-        self.content.pack_start(self.pin_entry, False, False, 3)
+        content.pack_start(self.pin_entry, False, False, 3)
         self.pin_entry.show()
 
-        self.generate_button = gtk.Button('Generate')
-        self.generate_button.connect('clicked', self.generate_otp)
-        self.content.pack_start(self.generate_button, False, False, 3)
-        self.generate_button.show()
+        generate_button = gtk.Button('Generate')
+        generate_button.connect('clicked', self.generate_otp)
+        content.pack_start(generate_button, False, False, 3)
+        generate_button.show()
         
 
         self.result_label = gtk.Label('')
-        self.content.pack_start(self.result_label, False, False, 3)
+        content.pack_start(self.result_label, False, False, 3)
         self.result_label.show()
 
-        self.content.show()
-        container.pack_start(self.content, True, True, 12)
+        content.show()
+        container.pack_start(content, True, True, 12)
         self.window.add(container)
 
     def generate_otp(self, widget, data = None):
@@ -91,8 +105,12 @@ class OTPGenerator:
         # print "secret key: " + self.secret_key
         # print "pin: " + self.pin_entry.get_text()
 
+        secret = self.get_secret()
+        if secret == None:
+            return None
+
         md = md5.new()
-        md.update(epoch + self.secret_key + self.pin_entry.get_text())
+        md.update(epoch + secret + self.pin_entry.get_text())
         result = md.hexdigest()
         self.result_label.set_text(result[0:6])
 
@@ -105,6 +123,38 @@ class OTPGenerator:
 
     def about(self):
         pass
+
+    def populate_profile(self):
+        store = self.profile_entry.get_model()
+        store.clear()
+
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT name, secret, show_secret FROM profiles")
+
+        for name, secret, show_secret in cursor:
+            store.append([name, secret, show_secret])
+
+        cursor.close()
+
+    def get_secret(self):
+        model = self.profile_entry.get_model()
+        active = self.profile_entry.get_active()
+        if active < 0:
+            dialog = gtk.MessageDialog(
+                self.window,
+                gtk.DIALOG_MODAL,
+                gtk.MESSAGE_INFO,
+                gtk.BUTTONS_OK,
+                "You don't have any profile, please crete your profile."
+            )
+            response = dialog.run()
+            if response:
+                dialog.destroy()
+
+            return None
+
+        return model[active][1]
+
 
 if __name__ == '__main__':
     otp_generator = OTPGenerator()
