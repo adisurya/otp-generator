@@ -21,6 +21,7 @@ class ProfileWindow:
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_transient_for(self.caller.window)
         self.window.set_modal(True)
+        self.window.set_title('Profile')
         self.window.set_border_width(5)
         self.window.connect("delete_event", self.delete_event)
 
