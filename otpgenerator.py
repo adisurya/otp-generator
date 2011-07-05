@@ -18,6 +18,7 @@ class OTPGenerator:
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.profile_window = profile.ProfileWindow(self)
         self.window.set_title('OTP Generator')
+        self.window.set_border_width(5)
         self.window.connect('destroy', lambda x: gtk.main_quit())
         self.window.set_border_width(0)
 
