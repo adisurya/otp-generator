@@ -139,13 +139,29 @@ class OTPGenerator:
     def get_secret(self):
         model = self.profile_entry.get_model()
         active = self.profile_entry.get_active()
+
+        if len(model) < 1:
+            dialog = gtk.MessageDialog(
+                self.window,
+                gtk.DIALOG_MODAL,
+                gtk.MESSAGE_WARNING,
+                gtk.BUTTONS_OK,
+                "You don't have any profile, please crete your profile."
+            )
+            response = dialog.run()
+            if response:
+                dialog.destroy()
+
+            return None
+
+
         if active < 0:
             dialog = gtk.MessageDialog(
                 self.window,
                 gtk.DIALOG_MODAL,
-                gtk.MESSAGE_INFO,
+                gtk.MESSAGE_WARNING,
                 gtk.BUTTONS_OK,
-                "You don't have any profile, please crete your profile."
+                "Select a profile!"
             )
             response = dialog.run()
             if response:
