@@ -20,7 +20,6 @@ class OTPGenerator:
         self.window.set_title('OTP Generator')
         self.window.set_border_width(5)
         self.window.connect('destroy', lambda x: gtk.main_quit())
-        self.window.set_border_width(0)
 
         ui = """
             <ui>
