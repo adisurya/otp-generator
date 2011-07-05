@@ -96,6 +96,11 @@ class ProfileWindow:
         button.show()
         button_box.add(button)
 
+        button = gtk.Button("Reload")
+        button.connect("clicked", self.reload_secret)
+        button.show()
+        button_box.add(button)
+
         button = gtk.Button("Remove")
         button.connect("clicked", self.remove_Profile)
         button.show()
@@ -281,3 +286,64 @@ class ProfileWindow:
 
         cursor.close()
         self.populate_profile()
+
+    def reload_secret(self, widget, data = None):
+        cursor = self.connection.cursor()
+        entry = self.profile_entry.child
+        profile_name = entry.get_text()
+
+        # check for empty profile name
+        if len(profile_name) <= 0:
+            dialog = gtk.MessageDialog(
+                self.window,
+                gtk.DIALOG_MODAL,
+                gtk.MESSAGE_WARNING,
+                gtk.BUTTONS_OK,
+                "Please enter your profile name!"
+            )
+            response = dialog.run()
+            if response:
+                dialog.destroy()
+                entry.grab_focus()
+            return None
+
+        # check for invalid profile name(profile not exists)
+        sql = """
+            SELECT name 
+            FROM profiles 
+            WHERE name = ?
+            """
+        cursor.execute(sql, (profile_name,))
+
+        if len(cursor.fetchall()) <= 0:
+            dialog = gtk.MessageDialog(
+                self.window,
+                gtk.DIALOG_MODAL,
+                gtk.MESSAGE_WARNING,
+                gtk.BUTTONS_OK,
+                "Invalid profile name!"
+            )
+            response = dialog.run()
+            if response:
+                dialog.destroy()
+                entry.grab_focus()
+            return None
+
+        secret = self.generate_secret()
+        if secret == None:
+            return None
+
+        sql = """
+            UPDATE profiles 
+            SET secret = ?,
+            show_secret = 1
+            WHERE name = ?
+            """
+
+        cursor.execute(sql, (secret, profile_name))
+        self.connection.commit()
+
+        cursor.close()
+        self.populate_profile()
+        self.caller.populate_profile()
+        self.secret_label.set_text(secret)
