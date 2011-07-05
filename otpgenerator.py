@@ -64,7 +64,10 @@ class OTPGenerator:
 
         store = gtk.ListStore(str, str, int)
 
-        self.profile_entry = gtk.ComboBoxEntry(store)
+        self.profile_entry = gtk.ComboBox(store)
+        cell = gtk.CellRendererText()
+        self.profile_entry.pack_start(cell, True)
+        self.profile_entry.add_attribute(cell, 'text', 0)
         content.pack_start(self.profile_entry, False, False, 0)
         self.populate_profile()
         self.profile_entry.show()
