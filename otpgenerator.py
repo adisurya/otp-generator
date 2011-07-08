@@ -6,6 +6,8 @@ import gtk
 import time
 import md5
 import sqlite3
+import os
+import shutil
 
 from window import profile
 from window import about
@@ -14,7 +16,16 @@ class OTPGenerator:
     window = None
     profile_window = None
     def __init__(self):
-        self.connection = sqlite3.connect('./data.sqlite')
+        self.base_dir = os.path.expanduser('~') + "/.otpgenerator"
+        self.dbfile = self.base_dir + "/data.sqlite"
+
+        if not os.path.isdir(self.base_dir):
+            os.mkdir(self.base_dir)
+        if not os.path.isfile(self.dbfile):
+            src = os.getcwd() + "/data.sqlite.blank"
+            print shutil.copy(src , self.dbfile)
+
+        self.connection = sqlite3.connect(self.dbfile)
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.profile_window = profile.ProfileWindow(self)
         self.window.set_title('OTP Generator')
@@ -87,7 +98,7 @@ class OTPGenerator:
         generate_button.connect('clicked', self.generate_otp)
         content.pack_start(generate_button, False, False, 3)
         generate_button.show()
-        
+
 
         self.result_label = gtk.Label('')
         content.pack_start(self.result_label, False, False, 3)
